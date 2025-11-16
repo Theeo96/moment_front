@@ -8,6 +8,7 @@ import { Upload, ImageIcon, X } from 'lucide-react'
 
 export default function UploadPage() {
   const [selectedImage, setSelectedImage] = useState<string | null>(null)
+  const [selectedFile, setSelectedFile] = useState<File | null>(null)
   const [isAnalyzing, setIsAnalyzing] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
   const router = useRouter()
@@ -15,6 +16,7 @@ export default function UploadPage() {
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (file) {
+      setSelectedFile(file)
       const reader = new FileReader()
       reader.onload = (e) => {
         setSelectedImage(e.target?.result as string)
@@ -25,22 +27,41 @@ export default function UploadPage() {
 
   const handleRemoveImage = () => {
     setSelectedImage(null)
+    setSelectedFile(null)
     if (fileInputRef.current) {
       fileInputRef.current.value = ''
     }
   }
 
-  const handleAnalyze = async () => {
-    if (!selectedImage) return
+  const handleAnalyze = () => {
+    console.log('=== handleAnalyze 호출됨 ===');
+    console.log('selectedImage:', selectedImage ? '있음' : '없음');
+    console.log('selectedFile:', selectedFile);
+    
+    if (!selectedImage || !selectedFile) {
+      console.log('이미지 또는 파일이 없어서 리턴');
+      alert('이미지를 선택해주세요.');
+      return;
+    }
 
-    setIsAnalyzing(true)
-
-    // Simulate analysis
-    setTimeout(() => {
-      // Randomly decide between good result (70%) and needs support (30%)
-      const isGoodResult = Math.random() > 0.3
-      router.push(isGoodResult ? '/result-good' : '/result-support')
-    }, 3000)
+    console.log('파일 정보:', { name: selectedFile.name, size: selectedFile.size, type: selectedFile.type });
+    
+    setIsAnalyzing(true);
+    
+    // 이미 selectedImage가 Base64이므로 그대로 사용
+    try {
+      sessionStorage.setItem('uploadImage', selectedImage);
+      sessionStorage.setItem('uploadFileName', selectedFile.name);
+      console.log('sessionStorage에 저장 완료');
+      console.log('페이지 이동 시도: /analyzing');
+      
+      // 로딩 페이지로 이동
+      router.push('/analyzing');
+    } catch (error) {
+      console.error('에러 발생:', error);
+      alert('오류가 발생했습니다: ' + (error instanceof Error ? error.message : '알 수 없는 오류'));
+      setIsAnalyzing(false);
+    }
   }
 
   return (
@@ -162,7 +183,10 @@ export default function UploadPage() {
                   ? 'bg-primary hover:bg-primary/90'
                   : 'bg-muted text-muted-foreground cursor-not-allowed'
               }`}
-              onClick={handleAnalyze}
+              onClick={() => {
+                console.log('버튼 클릭됨');
+                handleAnalyze();
+              }}
               disabled={!selectedImage || isAnalyzing}
             >
               {isAnalyzing ? (
