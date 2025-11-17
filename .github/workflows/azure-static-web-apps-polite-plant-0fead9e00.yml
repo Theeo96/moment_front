@@ -20,18 +20,28 @@ jobs:
           submodules: true
           lfs: false
 
-      # Node.js 20 강제 설치 (이게 핵심!)
+      # Node.js 20 설치 (Next.js 16 요구사항 충족)
       - name: Setup Node.js 20
         uses: actions/setup-node@v4
         with:
-          node-version: '20'      # 또는 '20.x', '20.18.0', '22' 등 가능
-          cache: 'npm'            # npm 캐시로 빌드 속도 2~3배 빨라짐
-          cache-dependency-path: frontend/package-lock.json   # 필요시 경로 조정
+          node-version: '20'      # 20.9.0 이상 자동 설치
+          cache: 'npm'
+          cache-dependency-path: frontend/package*.json
 
-      # (선택) npm install 수동으로 돌리고 싶을 때만 사용
-      # - name: Install Dependencies
-      #   run: npm ci
-      #   working-directory: ./frontend
+      # 의존성 설치 (ci로 더 안정적)
+      - name: Install Dependencies
+        run: npm ci
+        working-directory: ./frontend
+
+      # Next.js 빌드 (로컬에서 미리 실행)
+      - name: Build Next.js App
+        run: npm run build
+        working-directory: ./frontend
+
+      # (선택) staticwebapp.config.json을 .next 폴더로 복사 (라우팅 필요시)
+      # - name: Copy config for routing
+      #   run: cp staticwebapp.config.json frontend/.next/staticwebapp.config.json
+      #   if: hashFiles('staticwebapp.config.json') != ''
 
       - name: Build And Deploy
         id: builddeploy
@@ -41,15 +51,12 @@ jobs:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           action: "upload"
 
-          # Next.js 프로젝트에 맞게 수정한 부분
-          app_location: "./frontend"        # 기존과 동일
-          api_location: ""                  # API 없으면 그대로
-          output_location: ".next"          # Next.js는 .next 폴더가 기본 출력물!
-          # 만약 next export를 쓰고 있다면 아래처럼 바꿔야 함
-          # output_location: "out"
-
-          # (선택) Next.js 빌드 커맨드 커스터마이징 필요하면 추가
-          # app_build_command: "npm run build"
+          # 핵심: Oryx 빌드 스킵하고, 이미 빌드된 .next 폴더 사용
+          skip_app_build: true          # <- 이게 마법! Oryx build 무시
+          app_location: "./frontend"    # 소스 코드 경로 (빌드 무시되지만 참조용)
+          api_location: ""              # API 없음
+          output_location: ".next"      # 이미 빌드된 출력 폴더 (build 대신 .next로!)
+          # 만약 next export (완전 static) 쓰면 output_location: "out" 로 변경
 
   close_pull_request_job:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'
