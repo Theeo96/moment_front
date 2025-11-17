@@ -13,6 +13,7 @@ interface NavigationBarProps {
   onNavigateToUpload?: () => void
   onNavigateToTreatment?: () => void
   onNavigateToMyPage?: () => void
+  onNavigateToSharing?: () => void;
 }
 
 export default function NavigationBar({
@@ -25,11 +26,13 @@ export default function NavigationBar({
   onNavigateToUpload,
   onNavigateToTreatment,
   onNavigateToMyPage,
+  onNavigateToSharing,
 }: NavigationBarProps) {
   const handleNavigateMain = onNavigateHome || onNavigateToMain
   const handleNavigateUpload = onNavigateCamera || onNavigateToUpload
   const handleNavigateTreatment = onNavigateFavorites || onNavigateToTreatment
   const handleNavigateMyPage = onNavigateProfile || onNavigateToMyPage
+  const handleNavigateSharing = onNavigateToSharing;
 
   return (
     <nav className="p-3 flex-shrink-0">
