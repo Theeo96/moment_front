@@ -20,6 +20,12 @@ jobs:
           submodules: true
           lfs: false
 
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9        # 최신 버전
+          run_install: false
+
       # Node.js 20 강제 설치 (이게 핵심!)
       - name: Setup Node.js 20
         uses: actions/setup-node@v4
@@ -62,5 +68,6 @@ jobs:
         with:
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_POLITE_PLANT_0FEAD9E00 }}
           action: "close"
+
 
 
