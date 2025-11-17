@@ -25,8 +25,8 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'      # 또는 '20.x', '20.18.0', '22' 등 가능
-          cache: 'npm'            # npm 캐시로 빌드 속도 2~3배 빨라짐
-          cache-dependency-path: frontend/package-lock.json   # 필요시 경로 조정
+          cache: 'pnpm'            # npm 캐시로 빌드 속도 2~3배 빨라짐
+          cache-dependency-path: frontend/pnpm-lock.yaml   # 필요시 경로 조정
 
       # (선택) npm install 수동으로 돌리고 싶을 때만 사용
       # - name: Install Dependencies
@@ -62,4 +62,5 @@ jobs:
         with:
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_POLITE_PLANT_0FEAD9E00 }}
           action: "close"
+
 
