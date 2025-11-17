@@ -1,32 +1,21 @@
-import type { Metadata } from 'next'
-import { Geist, Geist_Mono } from 'next/font/google'
-import { Analytics } from '@vercel/analytics/next'
-import './globals.css'
+import type React from "react"
+import type { Metadata } from "next"
 
-const _geist = Geist({ subsets: ["latin"] });
-const _geistMono = Geist_Mono({ subsets: ["latin"] });
+import "./globals.css"
+import { Noto_Sans_KR, Merriweather as V0_Font_Merriweather } from 'next/font/google'
+
+// Initialize fonts
+const _merriweather = V0_Font_Merriweather({ subsets: ['latin'], weight: ["300","400","500","600","700","800","900"] })
+
+const notoSansKr = Noto_Sans_KR({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+})
 
 export const metadata: Metadata = {
-  title: 'moment - 마음 건강 관리',
-  description: '심리 테스트와 상담 병원 추천 서비스',
-  generator: 'v0.app',
-  icons: {
-    icon: [
-      {
-        url: '/icon-light-32x32.png',
-        media: '(prefers-color-scheme: light)',
-      },
-      {
-        url: '/icon-dark-32x32.png',
-        media: '(prefers-color-scheme: dark)',
-      },
-      {
-        url: '/icon.svg',
-        type: 'image/svg+xml',
-      },
-    ],
-    apple: '/apple-icon.png',
-  },
+  title: "모멘트 - 모두를 위한 멘탈 트리트먼트",
+  description: "5요인 기반의 신뢰성있는 심리 테스트, 그림 4장만으로 당신의 성격을 분석합니다.",
+  generator: "v0.app",
 }
 
 export default function RootLayout({
@@ -36,10 +25,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko">
-      <body className={`font-sans antialiased`}>
-        {children}
-        <Analytics />
-      </body>
+      <body className={`${notoSansKr.className} font-serif antialiased`}>{children}</body>
     </html>
   )
 }
