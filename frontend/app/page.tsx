@@ -1,31 +1,180 @@
-'use client'
+"use client"
 
-import { useEffect } from 'react'
-import { useRouter } from 'next/navigation'
+import { useState, useEffect } from "react"
+import Splash from "@/components/splash"
+import TutorialModal from "@/components/tutorial-modal"
+import SignupPage from "@/components/signup-page"
+import PrivacyConsentPage from "@/components/privacy-consent-page"
+import ImageUploadPage from "@/components/image-upload-page"
+import AnalysisLoadingPage from "@/components/analysis-loading-page"
+import ResultsPage from "@/components/results-page"
+import ResultSupportPage from "@/components/result-support-page"
+import ProfessionalSearchPage from "@/components/professional-search-page"
+import MainPage from "@/components/main-page"
+import ErrorPage from "@/components/error-page"
+import MyPage from "@/components/my-page"
+import TreatmentPage from "@/components/treatment-page"
+import SharingPage from "@/components/sharing-page" // Added sharing page import
+import TermsPage from "@/components/Terms-page" // Added sharing page import
 
-export default function SplashPage() {
-  const router = useRouter()
+type AppState = "splash" | "tutorial" | "signup" | "privacy" | "upload" | "analysis" | "results" | "professional" | "main" | "error" | "mypage" | "treatment" | "sharing" | "Terms" // Added sharing state
+
+export default function Home() {
+  const [appState, setAppState] = useState<AppState>("splash")
+  const [userProfile, setUserProfile] = useState<any>(null)
+  const [uploadedImage, setUploadedImage] = useState<string | null>(null)
+  const [analysisResults, setAnalysisResults] = useState<any>(null)
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      router.push('/tutorial')
-    }, 2000)
-
+      setAppState("tutorial")
+    }, 2500)
     return () => clearTimeout(timer)
-  }, [router])
+  }, [])
+
+  const needsSupport = analysisResults?.status === 'support' || analysisResults?.neuroticism > 60
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-orange-50 via-white to-orange-50">
-      <div className="text-center animate-in fade-in duration-700">
-        <h1 className="text-7xl font-bold tracking-tight text-foreground mb-4">
-          moment
-        </h1>
-        <div className="flex items-center justify-center gap-2">
-          <div className="h-2 w-2 rounded-full bg-primary animate-bounce [animation-delay:-0.3s]" />
-          <div className="h-2 w-2 rounded-full bg-primary animate-bounce [animation-delay:-0.15s]" />
-          <div className="h-2 w-2 rounded-full bg-primary animate-bounce" />
-        </div>
-      </div>
-    </div>
+    <main className="min-h-screen bg-background">
+      {appState === "splash" && <Splash />}
+      {appState === "tutorial" && (
+        <>
+          <Splash />
+          <TutorialModal
+            onStartNow={() => setAppState("signup")}
+            onLater={() => setAppState("main")}
+          />
+        </>
+      )}
+      {appState === "signup" && (
+        <SignupPage
+          onSignup={(profile) => {
+            setUserProfile(profile)
+            setAppState("privacy")
+          }}
+          onSkip={() => setAppState("main")}
+        />
+      )}
+      {appState === "main" && (
+        <MainPage
+          userProfile={userProfile}
+          onStartTest={() => setAppState("privacy")}
+          onLogout={() => setAppState("mypage")}
+          onNavigateToMain={() => setAppState("main")}
+          onNavigateToPrivacy={() => setAppState("privacy")}
+          onNavigateToHospital={() => setAppState("treatment")}
+          onNavigateToTreatment={() => setAppState("treatment")}
+          onNavigateToSharing={() => setAppState("sharing")} // Added sharing navigation handler
+        />
+      )}
+      {appState === "mypage" && (
+        <MyPage
+          userProfile={userProfile}
+          onBack={() => setAppState("main")}
+          onNavigateToMain={() => setAppState("main")}
+          onNavigateToUpload={() => setAppState("privacy")}
+          onNavigateToTreatment={() => setAppState("treatment")}
+          onNavigateToTerms={() => setAppState("Terms")}
+        />
+      )}
+      {appState === "privacy" && (
+        <PrivacyConsentPage
+          onAgree={() => setAppState("upload")}
+          onBack={() => setAppState("main")}
+        />
+      )}
+      {appState === "upload" && (
+        <ImageUploadPage
+          onUpload={(image) => {
+            setUploadedImage(image)
+            const status = Math.random() > 0.5 ? 'good' : 'support'
+            const mockResults = {
+              status,
+              openness: 72,
+              conscientiousness: 65,
+              extraversion: 58,
+              agreeableness: 78,
+              neuroticism: status === 'support' ? 65 : 45,
+              descriptions: {
+                openness: "새로운 경험에 개방적인 성향",
+                conscientiousness: "계획적이고 체계적인 성향",
+                extraversion: "사교적이고 활동적인 성향",
+                agreeableness: "협력적이고 친화적인 성향",
+                neuroticism: status === 'support' ? "주의가 필요한 정서 상태" : "안정적이고 균형잡힌 정서",
+              },
+            }
+            setAnalysisResults(mockResults)
+            setAppState("analysis")
+          }}
+          onError={() => setAppState("upload")}
+          onBack={() => setAppState("privacy")}
+        />
+      )}
+      {appState === "analysis" && (
+        <AnalysisLoadingPage
+          onComplete={() => setAppState("results")}
+          onSkip={() => setAppState("results")}
+        />
+      )}
+      {appState === "results" && !needsSupport && (
+        <ResultsPage
+          results={analysisResults}
+          onViewProfessionals={() => setAppState("professional")}
+          onBack={() => setAppState("upload")}
+          onNavigateToMain={() => setAppState("main")}
+          onNavigateToUpload={() => setAppState("privacy")}
+          onNavigateToTreatment={() => setAppState("treatment")}
+          onNavigateToMyPage={() => setAppState("mypage")}
+        />
+      )}
+      {appState === "results" && needsSupport && (
+        <ResultSupportPage
+          results={analysisResults}
+          onBack={() => setAppState("upload")}
+          onNavigateToMain={() => setAppState("main")}
+          onNavigateToUpload={() => setAppState("privacy")}
+          onNavigateToTreatment={() => setAppState("treatment")}
+          onNavigateToMyPage={() => setAppState("mypage")}
+        />
+      )}
+      {appState === "treatment" && (
+        <TreatmentPage
+          onBack={() => setAppState("main")}
+          onNavigateToHospital={() => setAppState("professional")}
+          onNavigateToMain={() => setAppState("main")}
+          onNavigateToUpload={() => setAppState("privacy")}
+          onNavigateToMyPage={() => setAppState("mypage")}
+        />
+      )}
+      {appState === "professional" && (
+        <ProfessionalSearchPage
+          onBack={() => setAppState("main")}
+          onNavigateToMain={() => setAppState("main")}
+          onNavigateToUpload={() => setAppState("privacy")}
+          onNavigateToTreatment={() => setAppState("treatment")}
+          onNavigateToMyPage={() => setAppState("mypage")}
+        />
+      )}
+      {appState === "sharing" && (
+        <SharingPage
+          onBack={() => setAppState("main")}
+          onNavigateToMain={() => setAppState("main")}
+          onNavigateToUpload={() => setAppState("privacy")}
+          onNavigateToTreatment={() => setAppState("treatment")}
+          onNavigateToMyPage={() => setAppState("mypage")}
+        />
+      )}
+      {appState === "Terms" && (
+        <TermsPage
+          onBack={() => setAppState("mypage")}
+        />
+      )}
+      {appState === "error" && (
+        <ErrorPage
+          onRetry={() => setAppState("analysis")}
+          onBackToHome={() => setAppState("main")}
+        />
+      )}
+    </main>
   )
 }
