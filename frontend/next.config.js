@@ -17,6 +17,11 @@ const nextConfig = {
   // eslint: {
   //   ignoreDuringBuilds: true
   // }
+
+  // 환경 변수 설정 (CI/CD에서 주입 가능)
+  env: {
+    NEXT_PUBLIC_API_BASE_URL: process.env.NEXT_PUBLIC_API_BASE_URL || 'http://4.217.198.234:5678',
+  },
 };
 
 module.exports = nextConfig;

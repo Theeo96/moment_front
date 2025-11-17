@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { ChevronLeft, Upload, AlertCircle, Home, TreePine, User } from 'lucide-react'
+import { getApiUrl } from "@/lib/api"
 
 interface ImageUploadPageProps {
   onUpload: (data: { image: string; category: number }) => void
@@ -81,7 +82,7 @@ export default function ImageUploadPage({ onUpload, onError, onBack }: ImageUplo
 
       console.log('[v0] Sending to backend - category:', selectedCategory)
 
-      const response = await fetch('http://4.217.198.234:5678/', {
+      const response = await fetch(getApiUrl('/'), {
         method: 'POST',
         body: formData,
       })
