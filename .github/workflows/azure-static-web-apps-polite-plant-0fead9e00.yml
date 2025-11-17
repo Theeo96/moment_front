@@ -48,6 +48,14 @@ jobs:
         run: pnpm run build
         working-directory: ./frontend
 
+      - name: Verify out folder exists
+        run: |
+          echo "=== frontend/out 디렉토리 내용 확인 ==="
+          ls -la frontend/out/ || echo "out 폴더가 없습니다!"
+          echo "=== index.html 첫 20줄 ==="
+          head -n 20 frontend/out/index.html || echo "index.html이 없습니다!"
+        working-directory: .
+
       - name: Build And Deploy
         id: builddeploy
         uses: Azure/static-web-apps-deploy@v1
@@ -82,6 +90,7 @@ jobs:
         with:
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_POLITE_PLANT_0FEAD9E00 }}
           action: "close"
+
 
 
 
