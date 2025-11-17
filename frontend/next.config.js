@@ -14,9 +14,9 @@ const nextConfig = {
   },
 
   // 필요하면 eslint도 무시
-  eslint: {
-    ignoreDuringBuilds: true
-  }
+  // eslint: {
+  //   ignoreDuringBuilds: true
+  // }
 };
 
 module.exports = nextConfig;
