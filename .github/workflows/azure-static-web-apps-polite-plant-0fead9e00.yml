@@ -57,12 +57,12 @@ jobs:
           action: "upload"
 
           # Next.js 프로젝트에 맞게 수정한 부분
-          app_location: "."        # 기존과 동일
+          app_location: "frontend"        # 기존과 동일
           api_location: ""                  # API 없으면 그대로
           # output_location: ".next"          # Next.js는 .next 폴더가 기본 출력물!
           # 만약 next export를 쓰고 있다면 아래처럼 바꿔야 함
           skip_app_build: true
-          output_location: "frontend/out"
+          output_location: "out"
 
           # (선택) Next.js 빌드 커맨드 커스터마이징 필요하면 추가
           # app_build_command: "npm run build"
@@ -78,6 +78,7 @@ jobs:
         with:
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_POLITE_PLANT_0FEAD9E00 }}
           action: "close"
+
 
 
 
