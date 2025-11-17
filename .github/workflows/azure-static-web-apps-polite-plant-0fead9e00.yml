@@ -52,6 +52,7 @@ jobs:
           api_location: ""                  # API 없으면 그대로
           # output_location: ".next"          # Next.js는 .next 폴더가 기본 출력물!
           # 만약 next export를 쓰고 있다면 아래처럼 바꿔야 함
+          skip_app_build: true
           output_location: "out"
 
           # (선택) Next.js 빌드 커맨드 커스터마이징 필요하면 추가
@@ -68,6 +69,7 @@ jobs:
         with:
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_POLITE_PLANT_0FEAD9E00 }}
           action: "close"
+
 
 
 
