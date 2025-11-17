@@ -41,7 +41,7 @@ jobs:
 
       # ← 여기 두 줄 추가
       - name: Install Dependencies
-        run: pnpm install --frozen-lockfile
+        run: pnpm install --no-frozen-lockfile
         working-directory: ./frontend
 
       - name: Build with Next.js Export
@@ -78,6 +78,7 @@ jobs:
         with:
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_POLITE_PLANT_0FEAD9E00 }}
           action: "close"
+
 
 
 
