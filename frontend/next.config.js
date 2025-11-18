@@ -20,7 +20,7 @@ const nextConfig = {
 
   // 환경 변수 설정 (CI/CD에서 주입 가능)
   env: {
-    NEXT_PUBLIC_API_BASE_URL: process.env.NEXT_PUBLIC_API_BASE_URL || 'http://20.39.187.105:443',
+    NEXT_PUBLIC_API_BASE_URL: process.env.NEXT_PUBLIC_API_BASE_URL || 'https://20.39.187.105:443',
   },
 };
 
