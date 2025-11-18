@@ -17,8 +17,9 @@ export const API_BASE_URL = getApiBaseUrl();
  * API 엔드포인트 URL 생성
  */
 export const getApiUrl = (endpoint: string): string => {
-  const baseUrl = API_BASE_URL.replace(/\/$/, ''); // 끝의 슬래시 제거
-  const path = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
+  const baseUrl = API_BASE_URL.replace(/\/$/, '');
+  const cleanEndpoint = endpoint === '/' ? '' : endpoint;
+  const path = cleanEndpoint.startsWith('/') ? cleanEndpoint : `/${cleanEndpoint}`;
   return `${baseUrl}${path}`;
 };
 
