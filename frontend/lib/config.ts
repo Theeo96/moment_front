@@ -14,7 +14,7 @@ export const config = {
    * CI/CD에서 환경 변수를 설정하면 이 값이 사용됩니다.
    * 환경 변수가 없으면 기본값(http://20.39.187.105:5678)이 사용됩니다.
    */
-  apiBaseUrl: process.env.NEXT_PUBLIC_API_BASE_URL || 'https://20.39.187.105:443',
+  apiBaseUrl: process.env.NEXT_PUBLIC_API_BASE_URL || 'https://htp-backend.koreacentral.cloudapp.azure.com/',
 } as const;
 
 /**
