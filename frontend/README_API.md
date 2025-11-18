@@ -1,4 +1,4 @@
-# API 설정 가이드
+# API 설정 가이드 (내용이 outdated 되어있을 수 있으므로 주의)
 
 ## 개요
 
@@ -13,7 +13,7 @@ CI/CD 환경에서는 환경 변수를 통해 오버라이드할 수 있습니�
 
 ```typescript
 export const config = {
-  apiBaseUrl: 'http://20.39.187.105:5678',
+  apiBaseUrl: 'http://20.39.187.105:443',
 } as const;
 ```
 
@@ -43,8 +43,8 @@ NEXT_PUBLIC_API_BASE_URL=http://localhost:5678
 import { getApiUrl } from "@/lib/api"
 
 // 엔드포인트 URL 생성
-const url = getApiUrl('/')  // http://20.39.187.105:5678/
-const healthUrl = getApiUrl('/health')  // http://20.39.187.105:5678/health
+const url = getApiUrl('/')  // http://20.39.187.105:443/
+const healthUrl = getApiUrl('/health')  // http://20.39.187.105:443/health
 ```
 
 ## CI/CD 설정 예시
