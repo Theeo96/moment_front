@@ -13,7 +13,7 @@ CI/CD 환경에서는 환경 변수를 통해 오버라이드할 수 있습니�
 
 ```typescript
 export const config = {
-  apiBaseUrl: 'http://4.217.198.234:5678',
+  apiBaseUrl: 'http://20.39.187.105:5678',
 } as const;
 ```
 
@@ -43,8 +43,8 @@ NEXT_PUBLIC_API_BASE_URL=http://localhost:5678
 import { getApiUrl } from "@/lib/api"
 
 // 엔드포인트 URL 생성
-const url = getApiUrl('/')  // http://4.217.198.234:5678/
-const healthUrl = getApiUrl('/health')  // http://4.217.198.234:5678/health
+const url = getApiUrl('/')  // http://20.39.187.105:5678/
+const healthUrl = getApiUrl('/health')  // http://20.39.187.105:5678/health
 ```
 
 ## CI/CD 설정 예시
@@ -60,12 +60,12 @@ const healthUrl = getApiUrl('/health')  // http://4.217.198.234:5678/health
 ### Azure Static Web Apps
 Azure Portal의 설정에서 환경 변수를 추가:
 - 이름: `NEXT_PUBLIC_API_BASE_URL`
-- 값: `http://4.217.198.234:5678`
+- 값: `http://20.39.187.105:5678`
 
 ### Vercel
 Vercel 대시보드의 Environment Variables에서:
 - 이름: `NEXT_PUBLIC_API_BASE_URL`
-- 값: `http://4.217.198.234:5678`
+- 값: `http://20.39.187.105:5678`
 
 ## 주의사항
 
