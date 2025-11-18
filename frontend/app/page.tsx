@@ -85,9 +85,25 @@ export default function Home() {
       )}
       {appState === "upload" && (
         <ImageUploadPage
-          onUpload={(data) => {
-            setUploadedImage(data.image)
-            setAnalysisResults(data.result)
+          onUpload={(image) => {
+            setUploadedImage(image)
+            const status = Math.random() > 0.5 ? 'good' : 'support'
+            const mockResults = {
+              status,
+              openness: 72,
+              conscientiousness: 65,
+              extraversion: 58,
+              agreeableness: 78,
+              neuroticism: status === 'support' ? 65 : 45,
+              descriptions: {
+                openness: "새로운 경험에 개방적인 성향",
+                conscientiousness: "계획적이고 체계적인 성향",
+                extraversion: "사교적이고 활동적인 성향",
+                agreeableness: "협력적이고 친화적인 성향",
+                neuroticism: status === 'support' ? "주의가 필요한 정서 상태" : "안정적이고 균형잡힌 정서",
+              },
+            }
+            setAnalysisResults(mockResults)
             setAppState("analysis")
           }}
           onError={() => setAppState("upload")}

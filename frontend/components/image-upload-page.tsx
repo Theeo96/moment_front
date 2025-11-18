@@ -4,35 +4,22 @@ import { useState, useRef, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { ChevronLeft, Upload, AlertCircle, Home, TreePine, User } from 'lucide-react'
-import { getApiUrl } from "@/lib/api"
 
 interface ImageUploadPageProps {
-  onUpload: (data: { image: string; category: number }) => void
+  onUpload: (image: string) => void
   onError: () => void
   onBack: () => void
 }
 
 export default function ImageUploadPage({ onUpload, onError, onBack }: ImageUploadPageProps) {
   const [uploadedImage, setUploadedImage] = useState<string | null>(null)
-  const [selectedCategory, setSelectedCategory] = useState<number | null>(null)
   const [hasError, setHasError] = useState(false)
   const [showDuplicateAlert, setShowDuplicateAlert] = useState(false)
   const [showSelection, setShowSelection] = useState(true)
+  const [selectedType, setSelectedType] = useState<number | null>(null)
+  const [selectedLabel, setSelectedLabel] = useState<string | null>(null)
+  const [isLoading, setIsLoading] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
-
-  const getCategoryName = () => {
-    if (selectedCategory === 0) return '집'
-    if (selectedCategory === 1) return '나무'
-    if (selectedCategory === 2) return '사람'
-    return null
-  }
-
-  const getCategoryIcon = () => {
-    if (selectedCategory === 0) return <Home className="w-6 h-6" />
-    if (selectedCategory === 1) return <TreePine className="w-6 h-6" />
-    if (selectedCategory === 2) return <User className="w-6 h-6" />
-    return null
-  }
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
@@ -58,6 +45,12 @@ export default function ImageUploadPage({ onUpload, onError, onBack }: ImageUplo
     const reader = new FileReader()
     reader.onload = (event) => {
       const result = event.target?.result as string
+      
+      if (uploadedImage === result) {
+        setShowDuplicateAlert(true)
+        return
+      }
+      
       setUploadedImage(result)
     }
     reader.readAsDataURL(file)
@@ -68,49 +61,56 @@ export default function ImageUploadPage({ onUpload, onError, onBack }: ImageUplo
   }
 
   const handleAnalyze = async () => {
-    if (!uploadedImage || selectedCategory === null) return
-
-    try {
-      const formData = new FormData()
+    if (uploadedImage && selectedType !== null) {
+      setIsLoading(true)
       
-      // Convert base64 to blob
-      const base64Response = await fetch(uploadedImage)
-      const blob = await base64Response.blob()
-      
-      formData.append('image', blob, 'drawing.jpg')
-      formData.append('category', selectedCategory.toString())
-
-      console.log('[v0] Sending to backend - category:', selectedCategory)
-
-      const response = await fetch(getApiUrl('/'), {
-        method: 'POST',
-        body: formData,
-      })
-
-      if (!response.ok) {
-        throw new Error('Backend request failed')
+      try {
+        const imageData = {
+          type: selectedType,
+          image: uploadedImage
+        }
+        
+        console.log("[v0] Sending to FastAPI:", { type: selectedType })
+        
+        const response = await fetch('http://4.217.198.234:5678/', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(imageData)
+        })
+        
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`)
+        }
+        
+        const result = await response.json()
+        console.log("[v0] FastAPI response:", result)
+        
+        // Pass the result to parent component
+        onUpload(JSON.stringify(result))
+      } catch (error) {
+        console.error("[v0] Error sending to FastAPI:", error)
+        onError()
+      } finally {
+        setIsLoading(false)
       }
-
-      const result = await response.json()
-      console.log('[v0] Backend response:', result)
-
-      // Pass both image and result to parent
-      onUpload({ image: uploadedImage, category: selectedCategory, result })
-    } catch (error) {
-      console.error('[v0] Error sending to backend:', error)
-      onError()
     }
   }
 
-  const handleSelectCategory = (category: number) => {
-    setSelectedCategory(category)
-    setUploadedImage(null)
+  const handleSelectType = (type: number, label: string) => {
+    setSelectedType(type)
+    setSelectedLabel(label)
     setShowSelection(false)
   }
 
   const handleReopenSelection = () => {
     setShowSelection(true)
     setUploadedImage(null)
+  }
+
+  const handleBackNavigation = () => {
+    onBack()
   }
 
   if (hasError) {
@@ -162,7 +162,7 @@ export default function ImageUploadPage({ onUpload, onError, onBack }: ImageUplo
       <header className="border-b border-border bg-card">
         <div className="max-w-2xl mx-auto px-4 py-3 flex items-center gap-4">
           <button
-            onClick={onBack}
+            onClick={handleBackNavigation}
             className="text-muted-foreground hover:text-foreground transition-colors"
             aria-label="뒤로가기"
           >
@@ -176,19 +176,19 @@ export default function ImageUploadPage({ onUpload, onError, onBack }: ImageUplo
       <main className="flex-1 max-w-2xl w-full mx-auto px-4 py-4 flex flex-col">
         <div className="mb-4 flex justify-center">
           <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
-            {getCategoryIcon() || <div className="text-2xl">🎨</div>}
+            <div className="text-2xl">🎨</div>
           </div>
         </div>
 
         <h2 className="text-xl font-bold text-center text-foreground mb-1">
-          {getCategoryName() ? `${getCategoryName()} 그리기` : '그림 업로드'}
+          {selectedLabel ? `${selectedLabel} 그리기` : '그림 업로드'}
         </h2>
 
-        {getCategoryName() && (
+        {selectedLabel && (
           <p className="text-xs text-muted-foreground text-center mb-4">
-            {selectedCategory === 0 && '문, 창문, 지붕을 포함해서 자유롭게 그려주세요'}
-            {selectedCategory === 1 && '줄기, 가지, 뿌리를 포함해서 자유롭게 그려주세요'}
-            {selectedCategory === 2 && '머리부터 발끝까지 전신을 그려주세요'}
+            {selectedLabel === '집' && '문, 창문, 지붕을 포함해서 자유롭게 그려주세요'}
+            {selectedLabel === '나무' && '줄기, 가지, 뿌리를 포함해서 자유롭게 그려주세요'}
+            {selectedLabel === '사람' && '머리부터 발끝까지 전신을 그려주세요'}
           </p>
         )}
 
@@ -246,17 +246,18 @@ export default function ImageUploadPage({ onUpload, onError, onBack }: ImageUplo
         <div className="flex gap-3 mt-auto">
           <Button
             variant="outline"
-            onClick={onBack}
+            onClick={handleBackNavigation}
+            disabled={isLoading}
             className="flex-1 text-foreground border-border hover:bg-secondary bg-red-50"
           >
             뒤로가기
           </Button>
           <Button
             onClick={handleAnalyze}
-            disabled={!uploadedImage || selectedCategory === null}
+            disabled={!uploadedImage || isLoading}
             className="flex-1 bg-primary hover:bg-primary/90 text-primary-foreground disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            결과보기
+            {isLoading ? '전송 중...' : '결과보기'}
           </Button>
         </div>
       </main>
@@ -286,12 +287,12 @@ export default function ImageUploadPage({ onUpload, onError, onBack }: ImageUplo
           <Card className="max-w-md w-full border-0 shadow-2xl">
             <CardHeader className="pb-4">
               <CardTitle className="text-lg text-center text-chart-4" style={{ color: '#6B4423' }}>
-                HTP 이미지 분석을 위해<br/>그림을 그려서 올려주세요<br/>(1가지 선택)
+                HTP 이미지 분석을 위해<br/>그림을 선택하고 그려서 올려주세요
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
               <Button
-                onClick={() => handleSelectCategory(0)}
+                onClick={() => handleSelectType(0, '집')}
                 className="w-full h-16 text-foreground border-2 flex items-center justify-center gap-3 bg-primary/10 hover:bg-primary/20 border-primary/20 hover:border-primary"
                 variant="outline"
               >
@@ -300,7 +301,7 @@ export default function ImageUploadPage({ onUpload, onError, onBack }: ImageUplo
               </Button>
               
               <Button
-                onClick={() => handleSelectCategory(1)}
+                onClick={() => handleSelectType(1, '나무')}
                 className="w-full h-16 text-foreground border-2 flex items-center justify-center gap-3 bg-primary/10 hover:bg-primary/20 border-primary/20 hover:border-primary"
                 variant="outline"
               >
@@ -309,7 +310,7 @@ export default function ImageUploadPage({ onUpload, onError, onBack }: ImageUplo
               </Button>
               
               <Button
-                onClick={() => handleSelectCategory(2)}
+                onClick={() => handleSelectType(2, '사람')}
                 className="w-full h-16 text-foreground border-2 flex items-center justify-center gap-3 bg-primary/10 hover:bg-primary/20 border-primary/20 hover:border-primary"
                 variant="outline"
               >

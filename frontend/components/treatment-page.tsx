@@ -53,7 +53,7 @@ export default function TreatmentPage({
         <div className="text-center mb-3">
           <h1 className="font-bold text-foreground mb-2 text-base">잠시 쉬어가세요</h1>
           <p className="text-sm text-muted-foreground">
-            마음이 힘들때까지는 시간을 가져보세요
+            마음이 힘들 때 시간을 가져보세요
           </p>
         </div>
 
