@@ -29,7 +29,7 @@ export const getApiUrl = (endpoint: string): string => {
 export const analyzeImage = async (image: File, category: number) => {
   const formData = new FormData();
   formData.append('image', image);
-  formData.append('category', category.toString());
+  formData.append('category', String(category));
 
   const response = await fetch(getApiUrl('/'), {
     method: 'POST',
