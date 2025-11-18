@@ -12,9 +12,9 @@ export const config = {
    * 백엔드 API 기본 URL
    * 
    * CI/CD에서 환경 변수를 설정하면 이 값이 사용됩니다.
-   * 환경 변수가 없으면 기본값(http://4.217.198.234:5678)이 사용됩니다.
+   * 환경 변수가 없으면 기본값(http://20.39.187.105:5678)이 사용됩니다.
    */
-  apiBaseUrl: process.env.NEXT_PUBLIC_API_BASE_URL || 'http://4.217.198.234:5678',
+  apiBaseUrl: process.env.NEXT_PUBLIC_API_BASE_URL || 'http://20.39.187.105:5678',
 } as const;
 
 /**
