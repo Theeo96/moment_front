@@ -70,36 +70,8 @@ export default function ImageUploadPage({ onUpload, onError, onBack }: ImageUplo
   const handleAnalyze = async () => {
     if (!uploadedImage || selectedCategory === null) return
 
-    try {
-      const formData = new FormData()
-      
-      // Convert base64 to blob
-      const base64Response = await fetch(uploadedImage)
-      const blob = await base64Response.blob()
-      
-      formData.append('image', blob, 'drawing.jpg')
-      formData.append('category', selectedCategory.toString())
-
-      console.log('[v0] Sending to backend - category:', selectedCategory)
-
-      const response = await fetch(getApiUrl('/'), {
-        method: 'POST',
-        body: formData,
-      })
-
-      if (!response.ok) {
-        throw new Error('Backend request failed')
-      }
-
-      const result = await response.json()
-      console.log('[v0] Backend response:', result)
-
-      // Pass both image and result to parent
-      onUpload({ image: uploadedImage, category: selectedCategory, result })
-    } catch (error) {
-      console.error('[v0] Error sending to backend:', error)
-      onError()
-    }
+    // 즉시 로딩페이지로 이동 (API 호출은 로딩페이지에서 처리)
+    onUpload({ image: uploadedImage, category: selectedCategory })
   }
 
   const handleSelectCategory = (category: number) => {

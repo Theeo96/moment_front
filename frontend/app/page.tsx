@@ -24,6 +24,7 @@ export default function Home() {
   const [userProfile, setUserProfile] = useState<any>(null)
   const [uploadedImage, setUploadedImage] = useState<string | null>(null)
   const [analysisResults, setAnalysisResults] = useState<any>(null)
+  const [uploadData, setUploadData] = useState<{ image: string; category: number } | null>(null)
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -32,7 +33,7 @@ export default function Home() {
     return () => clearTimeout(timer)
   }, [])
 
-  const needsSupport = analysisResults?.status === 'support' || analysisResults?.neuroticism > 60
+  const needsSupport = analysisResults?.personality?.type?.name === '신경성'
 
   return (
     <main className="min-h-screen bg-background">
@@ -87,17 +88,22 @@ export default function Home() {
         <ImageUploadPage
           onUpload={(data) => {
             setUploadedImage(data.image)
-            setAnalysisResults(data.result)
+            setUploadData({ image: data.image, category: data.category })
             setAppState("analysis")
           }}
           onError={() => setAppState("upload")}
           onBack={() => setAppState("privacy")}
         />
       )}
-      {appState === "analysis" && (
+      {appState === "analysis" && uploadData && (
         <AnalysisLoadingPage
-          onComplete={() => setAppState("results")}
-          onSkip={() => setAppState("results")}
+          onComplete={(result) => {
+            setAnalysisResults(result)
+            setAppState("results")
+          }}
+          onError={() => setAppState("upload")}
+          image={uploadData.image}
+          category={uploadData.category}
         />
       )}
       {appState === "results" && !needsSupport && (
