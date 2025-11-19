@@ -1,7 +1,7 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
-import { NewspaperIcon,Settings, Calendar, ChevronRight, ChevronLeft, Bell, HelpCircle, LogOut } from 'lucide-react'
+import { NewspaperIcon,Settings, Calendar, ChevronRight, ChevronLeft, Bell, HelpCircle, LogOut, CaseSensitive, BookType } from 'lucide-react'
 import NavigationBar from "@/components/navigation-bar"
 
 interface MyPageProps {
@@ -125,6 +125,22 @@ export default function MyPage({
               <div className="flex items-center gap-2">
                 <NewspaperIcon className="w-4 h-4 text-muted-foreground" />
                 <span className="text-xs text-foreground">약관</span>
+              </div>
+              <ChevronRight className="w-4 h-4 text-muted-foreground" />
+            </button>
+
+            <button className="w-full flex items-center justify-between p-2.5 border-b border-border hover:bg-muted/50 transition-colors">
+              <div className="flex items-center gap-2">
+                <CaseSensitive className="w-4 h-4 text-muted-foreground" />
+                <span className="text-xs text-foreground">큰 글씨 보기</span>
+              </div>
+              <ChevronRight className="w-4 h-4 text-muted-foreground" />
+            </button>
+
+            <button className="w-full flex items-center justify-between p-2.5 border-b border-border hover:bg-muted/50 transition-colors">
+              <div className="flex items-center gap-2">
+                <BookType className="w-4 h-4 text-muted-foreground" />
+                <span className="text-xs text-foreground">검사 결과 백과사전</span>
               </div>
               <ChevronRight className="w-4 h-4 text-muted-foreground" />
             </button>
