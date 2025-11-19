@@ -14,10 +14,14 @@ import MainPage from "@/components/main-page"
 import ErrorPage from "@/components/error-page"
 import MyPage from "@/components/my-page"
 import TreatmentPage from "@/components/treatment-page"
-import SharingPage from "@/components/sharing-page" // Added sharing page import
-import TermsPage from "@/components/Terms-page" // Added sharing page import
+import SharingPage from "@/components/sharing-page"
+import TermsPage from "@/components/Terms-page"
+import MusicPage from "@/components/music-page"
+import TeaPage from "@/components/tea-page"
+import TestHistoryPage from "@/components/test-history-page"
+import type { TestResult } from "@/lib/test-results-storage"
 
-type AppState = "splash" | "tutorial" | "signup" | "privacy" | "upload" | "analysis" | "results" | "professional" | "main" | "error" | "mypage" | "treatment" | "sharing" | "Terms" // Added sharing state
+type AppState = "splash" | "tutorial" | "signup" | "privacy" | "upload" | "analysis" | "results" | "professional" | "main" | "error" | "mypage" | "treatment" | "sharing" | "Terms" | "music" | "tea" | "testHistory"
 
 export default function Home() {
   const [appState, setAppState] = useState<AppState>("splash")
@@ -25,6 +29,8 @@ export default function Home() {
   const [uploadedImage, setUploadedImage] = useState<string | null>(null)
   const [analysisResults, setAnalysisResults] = useState<any>(null)
   const [uploadData, setUploadData] = useState<{ image: string; category: number } | null>(null)
+  const [selectedTestResult, setSelectedTestResult] = useState<TestResult | null>(null)
+  const [fromHistory, setFromHistory] = useState(false) // 추가: 검사 내역에서 왔는지 추적
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -65,7 +71,7 @@ export default function Home() {
           onNavigateToPrivacy={() => setAppState("privacy")}
           onNavigateToHospital={() => setAppState("treatment")}
           onNavigateToTreatment={() => setAppState("treatment")}
-          onNavigateToSharing={() => setAppState("sharing")} // Added sharing navigation handler
+          onNavigateToSharing={() => setAppState("sharing")}
         />
       )}
       {appState === "mypage" && (
@@ -76,6 +82,7 @@ export default function Home() {
           onNavigateToUpload={() => setAppState("privacy")}
           onNavigateToTreatment={() => setAppState("treatment")}
           onNavigateToTerms={() => setAppState("Terms")}
+          onViewTestHistory={() => setAppState("testHistory")}
         />
       )}
       {appState === "privacy" && (
@@ -110,17 +117,32 @@ export default function Home() {
         <ResultsPage
           results={analysisResults}
           onViewProfessionals={() => setAppState("professional")}
-          onBack={() => setAppState("upload")}
+          onBack={() => {
+            if (fromHistory) {
+              setFromHistory(false)
+              setAppState("testHistory")
+            } else {
+              setAppState("upload")
+            }
+          }}
           onNavigateToMain={() => setAppState("main")}
           onNavigateToUpload={() => setAppState("privacy")}
           onNavigateToTreatment={() => setAppState("treatment")}
           onNavigateToMyPage={() => setAppState("mypage")}
+          fromHistory={fromHistory} // 추가
         />
       )}
       {appState === "results" && needsSupport && (
         <ResultSupportPage
           results={analysisResults}
-          onBack={() => setAppState("upload")}
+          onBack={() => {
+            if (fromHistory) {
+              setFromHistory(false)
+              setAppState("testHistory")
+            } else {
+              setAppState("upload")
+            }
+          }}
           onNavigateToMain={() => setAppState("main")}
           onNavigateToUpload={() => setAppState("privacy")}
           onNavigateToTreatment={() => setAppState("treatment")}
@@ -133,6 +155,28 @@ export default function Home() {
           onNavigateToHospital={() => setAppState("professional")}
           onNavigateToMain={() => setAppState("main")}
           onNavigateToUpload={() => setAppState("privacy")}
+          onNavigateToMyPage={() => setAppState("mypage")}
+          onNavigateToMusic={() => setAppState("music")}
+          onNavigateToTea={() => setAppState("tea")}
+        />
+      )}
+      {appState === "music" && (
+        <MusicPage
+          onBack={() => setAppState("treatment")}
+          personalityResults={analysisResults}
+          onNavigateToMain={() => setAppState("main")}
+          onNavigateToUpload={() => setAppState("privacy")}
+          onNavigateToTreatment={() => setAppState("treatment")}
+          onNavigateToMyPage={() => setAppState("mypage")}
+        />
+      )}
+      {appState === "tea" && (
+        <TeaPage
+          onBack={() => setAppState("treatment")}
+          personalityResults={analysisResults}
+          onNavigateToMain={() => setAppState("main")}
+          onNavigateToUpload={() => setAppState("privacy")}
+          onNavigateToTreatment={() => setAppState("treatment")}
           onNavigateToMyPage={() => setAppState("mypage")}
         />
       )}
@@ -163,6 +207,17 @@ export default function Home() {
         <ErrorPage
           onRetry={() => setAppState("analysis")}
           onBackToHome={() => setAppState("main")}
+        />
+      )}
+      {appState === "testHistory" && (
+        <TestHistoryPage
+          onBack={() => setAppState("mypage")}
+          onViewResult={(result) => {
+            setSelectedTestResult(result)
+            setAnalysisResults(result)
+            setFromHistory(true) // 검사 내역에서 왔음을 표시
+            setAppState("results")
+          }}
         />
       )}
     </main>

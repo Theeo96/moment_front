@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Home, Share2, X, Heart, ChevronLeft, ChevronDown, ChevronUp } from 'lucide-react'
 import NavigationBar from '@/components/navigation-bar'
+import { saveTestResult } from '@/lib/test-results-storage'
 
 export default function ResultSupportPage({
   results,
@@ -23,6 +24,15 @@ export default function ResultSupportPage({
 }) {
   const [showDetails, setShowDetails] = useState(false)
   const [showTreatmentPopup, setShowTreatmentPopup] = useState(false)
+  const [isSaved, setIsSaved] = useState(false)
+
+  const handleSaveResults = () => {
+    const saved = saveTestResult(results)
+    if (saved) {
+      setIsSaved(true)
+      setTimeout(() => setIsSaved(false), 2000)
+    }
+  }
 
   return (
     <div className="h-screen bg-background flex flex-col overflow-hidden">
@@ -126,9 +136,11 @@ export default function ResultSupportPage({
               variant="outline"
               size="lg"
               className="w-full h-12 text-sm"
+              onClick={handleSaveResults}
+              disabled={isSaved}
             >
               <Share2 className="mr-2 h-4 w-4" />
-              결과 저장
+              {isSaved ? '저장 완료!' : '결과 저장'}
             </Button>
           </div>
 
