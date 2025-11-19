@@ -45,8 +45,11 @@ jobs:
         working-directory: ./frontend
 
       - name: Build with Next.js Export
-        run: pnpm run build
+        run: pnpm run build --no-turbo
         working-directory: ./frontend
+        env:
+          NEXT_PRIVATE_TURBOPACK: "0"     # 보험용 (필요시)
+          IS_STATIC_EXPORT: true
 
       - name: Verify out folder exists
         run: |
@@ -69,7 +72,6 @@ jobs:
           skip_app_build: true
           
         env:
-          NEXT_PRIVATE_TURBOPACK: "0"
           IS_STATIC_EXPORT: true
 
   close_pull_request_job:
