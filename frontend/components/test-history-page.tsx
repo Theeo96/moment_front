@@ -3,8 +3,8 @@
 import { useState, useEffect } from 'react'
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
-import { ChevronLeft, Calendar } from 'lucide-react'
-import { getTestHistory, type TestResult } from '@/lib/test-results-storage'
+import { ChevronLeft, Calendar, Trash2 } from 'lucide-react'
+import { getTestHistory, deleteTestResult, type TestResult } from '@/lib/test-results-storage'
 
 interface TestHistoryPageProps {
   onBack: () => void
@@ -14,14 +14,18 @@ interface TestHistoryPageProps {
 export default function TestHistoryPage({ onBack, onViewResult }: TestHistoryPageProps) {
   const [history, setHistory] = useState<TestResult[]>([])
 
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString)
-    const year = date.getFullYear()
-    const month = String(date.getMonth() + 1).padStart(2, '0')
-    const day = String(date.getDate()).padStart(2, '0')
-    const hours = String(date.getHours()).padStart(2, '0')
-    const minutes = String(date.getMinutes()).padStart(2, '0')
-    return `${year}.${month}.${day} ${hours}:${minutes}`
+
+  const handleDelete = (e: React.MouseEvent, testId: string) => {
+    e.stopPropagation() // 카드 클릭 이벤트 전파 방지
+    
+    if (window.confirm('이 검사 결과를 삭제하시겠습니까?')) {
+      const success = deleteTestResult(testId)
+      if (success) {
+        // 삭제 후 목록 새로고침
+        const updatedHistory = getTestHistory()
+        setHistory(updatedHistory)
+      }
+    }
   }
 
   useEffect(() => {
@@ -85,9 +89,16 @@ export default function TestHistoryPage({ onBack, onViewResult }: TestHistoryPag
                           </span>
                         )}
                     </div>
-                      <p className="text-xs text-muted-foreground mb-2">{formatDate(test.date)}</p>
-                    
                   </div>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="flex-shrink-0 text-muted-foreground hover:text-destructive hover:bg-destructive/10"
+                      onClick={(e) => handleDelete(e, test.id)}
+                      aria-label="삭제"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </Button>
                 </div>
               </Card>
               )
