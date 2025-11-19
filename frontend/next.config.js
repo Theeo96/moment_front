@@ -8,8 +8,6 @@ const nextConfig = {
   // 만약 rewrites, redirects 쓰고 있었다면 주석 처리하거나 삭제
   // async rewrites() { ... }  ← 이런 거 있으면 일단 주석!
 
-  // turbopack: false,
-
   // ← 이 한 줄 추가하면 validator 에러 100% 사라짐
   typescript: {
     ignoreBuildErrors: true
