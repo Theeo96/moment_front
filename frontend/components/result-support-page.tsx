@@ -30,14 +30,41 @@ export default function ResultSupportPage({
 
   const alreadySaved = isTestResultSaved(results)
 
-  // personality 데이터에서 정보 추출 (실제 JSON 구조에 맞게)
-  const personality = results?.personality || {}
-  const personalityType = personality?.type || {}
-  const personalityIcon = personalityType?.icon || "😔"
-  const personalitySummary = personality?.summary || "괜찮아요, 당신은 충분히 잘하고 있어요"
-  const personalityDetails = personality?.details || "" // 문자열 (줄바꿈 포함)
-  const personalityAdvices = personality?.advices || [] // 배열
-  const personalityWarning = personality?.warning || "" // 문자열
+  // // personality 데이터에서 정보 추출 (실제 JSON 구조에 맞게)
+  // const personality = results?.personality || {}
+  // const personalityType = personality?.type || {}
+  // const personalityIcon = personalityType?.icon || "😔"
+  // const personalitySummary = personality?.summary || "괜찮아요, 당신은 충분히 잘하고 있어요"
+  // const personalityDetails = personality?.details || "" // 문자열 (줄바꿈 포함)
+  // const personalityAdvices = personality?.advices || [] // 배열
+  // const personalityWarning = personality?.warning || "" // 문자열
+
+  const { personality = {} } = results || {};
+
+  // personality와 personalityType을 구조 분해하여 모든 하위 변수를 한 번에 선언
+  const {
+    type: personalityType = {}, // personalityType 별도 추출
+    summary: personalitySummary = "괜찮아요, 당신은 충분히 잘하고 있어요",
+    details: personalityDetails = "",
+    advices: personalityAdvices = [],
+    warning: personalityWarning = "",
+  } = personality;
+
+  // personalityType에서 icon 등을 추출
+  const {
+    icon: personalityIcon = "😔",
+    description, // title 생성에 사용될 변수
+    name,        // title 생성에 사용될 변수
+    key,         // title 생성에 사용될 변수
+  } = personalityType;
+
+  // personality.type을 f-string 형식으로 변환: '{description} {name}({key})'
+  // title 변수도 한 번만 선언되도록 관리
+  const title = description && name && key
+    ? `${description} ${name}(${key})`
+    : "요즘 조금 힘든 시간을\n보내고 계시는군요"
+
+  //
 
   const handleSaveResults = () => {
       if (alreadySaved) return
@@ -51,9 +78,9 @@ export default function ResultSupportPage({
 
 
   // personality.type을 f-string 형식으로 변환: '{description} {name}({key})'
-  const title = personalityType?.description && personalityType?.name && personalityType?.key
-    ? `${personalityType.description} ${personalityType.name}(${personalityType.key})`
-    : "요즘 조금 힘든 시간을\n보내고 계시는군요"
+  // const title = personalityType?.description && personalityType?.name && personalityType?.key
+  //   ? `${personalityType.description} ${personalityType.name}(${personalityType.key})`
+  //   : "요즘 조금 힘든 시간을\n보내고 계시는군요"
 
   // personality 데이터에서 정보 추출 (실제 JSON 구조에 맞게)
   const personality = results?.personality || {}
