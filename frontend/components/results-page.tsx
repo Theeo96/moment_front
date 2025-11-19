@@ -37,7 +37,7 @@ export default function ResultsPage({
     const saved = saveTestResult(results)
     if (saved) {
       setIsSaved(true)
-      setTimeout(() => setIsSaved(false), 2000)
+      // setTimeout(() => setIsSaved(false), 2000)
     }
   }
 
@@ -152,12 +152,12 @@ export default function ResultsPage({
               disabled={isSaved || alreadySaved} // 이미 저장된 결과는 비활성화
             >
               <Share2 className="mr-2 h-4 w-4" />
-              {alreadySaved ? '저장 완료' : isSaved ? '저장 완료!' : '결과 저장'}
+              {alreadySaved ? '저장 완료' : isSaved ? '저장 완료' : '결과 저장'}
             </Button>
           </div>
 
           <p className="text-xs text-center text-muted-foreground leading-relaxed whitespace-pre-line">
-            {warning}
+            {/* {warning} */}
           </p>
         </div>
       </main>

@@ -34,7 +34,7 @@ export const saveTestResult = (results: any) => {
     const newResult: TestResult = {
       ...results,
       id: results.id || `test_${Date.now()}`,
-      date: new Date().toLocaleDateString('ko-KR', { year: 'numeric', month: '2-digit', day: '2-digit' }).replace(/\. /g, '.').replace('.', ''),
+      date: new Date().toLocaleDateString('ko-KR', { year: 'numeric', month: '2-digit', day: '2-digit' }).replace(/\. /g, '.'),
       timestamp: Date.now()
     }
     

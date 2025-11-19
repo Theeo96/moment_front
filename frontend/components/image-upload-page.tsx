@@ -158,9 +158,9 @@ export default function ImageUploadPage({ onUpload, onError, onBack }: ImageUplo
 
         {getCategoryName() && (
           <p className="text-xs text-muted-foreground text-center mb-4">
-            {selectedCategory === 0 && '문, 창문, 지붕을 포함해서 자유롭게 그려주세요'}
-            {selectedCategory === 1 && '줄기, 가지, 뿌리를 포함해서 자유롭게 그려주세요'}
-            {selectedCategory === 2 && '머리부터 발끝까지 전신을 그려주세요'}
+            {selectedCategory === 0 && '종이를 가로로 놓고, 집을 자유롭게 그리고 그림을 마음껏 꾸며주세요'}
+            {selectedCategory === 1 && '종이를 세로로 놓고, 나무를 자유롭게 그리고 그림을 마음껏 꾸며주세요'}
+            {selectedCategory === 2 && '종이를 세로로 놓고, 사람을 자유롭게 그리고 그림을 마음껏 꾸며주세요'}
           </p>
         )}
 
