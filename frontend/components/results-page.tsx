@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Home, Share2, ChevronLeft, ChevronDown, ChevronUp } from 'lucide-react'
 import NavigationBar from '@/components/navigation-bar'
+import { saveTestResult, isTestResultSaved } from '@/lib/test-results-storage'
 
 export default function ResultsPage({ 
   results, 
@@ -13,7 +14,8 @@ export default function ResultsPage({
   onNavigateToMain,
   onNavigateToUpload,
   onNavigateToTreatment,
-  onNavigateToMyPage
+  onNavigateToMyPage,
+  fromHistory = false // 추가: 검사 내역에서 왔는지 구분
 }: {
   results: any
   onViewProfessionals: () => void
@@ -22,8 +24,22 @@ export default function ResultsPage({
   onNavigateToUpload: () => void
   onNavigateToTreatment: () => void
   onNavigateToMyPage: () => void
+  fromHistory?: boolean // 추가
 }) {
   const [showDetails, setShowDetails] = useState(false)
+  const [isSaved, setIsSaved] = useState(false)
+
+  const alreadySaved = isTestResultSaved(results)
+
+  const handleSaveResults = () => {
+    if (alreadySaved) return
+    
+    const saved = saveTestResult(results)
+    if (saved) {
+      setIsSaved(true)
+      // setTimeout(() => setIsSaved(false), 2000)
+    }
+  }
 
   // personality 데이터에서 정보 추출 (실제 JSON 구조에 맞게)
   const personality = results?.personality || {}
@@ -38,6 +54,8 @@ export default function ResultsPage({
   const title = personalityType?.description && personalityType?.name && personalityType?.key
     ? `${personalityType.description} ${personalityType.name}(${personalityType.key})`
     : "마음이 평온하고\n안정적인 상태네요"
+
+  const needsSupport = personalityType?.name === '신경성'
 
   return (
     <div className="h-screen bg-background flex flex-col overflow-hidden">
@@ -130,14 +148,16 @@ export default function ResultsPage({
               variant="outline"
               size="lg"
               className="w-full h-12 text-sm"
+              onClick={handleSaveResults}
+              disabled={isSaved || alreadySaved} // 이미 저장된 결과는 비활성화
             >
               <Share2 className="mr-2 h-4 w-4" />
-              결과 저장
+              {alreadySaved ? '저장 완료' : isSaved ? '저장 완료' : '결과 저장'}
             </Button>
           </div>
 
           <p className="text-xs text-center text-muted-foreground leading-relaxed whitespace-pre-line">
-            {warning}
+            {/* {warning} */}
           </p>
         </div>
       </main>

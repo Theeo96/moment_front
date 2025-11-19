@@ -106,8 +106,8 @@ export default function PrivacyConsentPage({ onAgree, onBack }: PrivacyConsentPa
 
               <div className="bg-secondary/5 border border-border rounded-lg p-3">
                 <p className="text-xs text-foreground leading-relaxed">
-                  <strong>선택사항:</strong> 동의는 자발적이며, 진행 중 언제든지 중단할 수 있습니다. 동의하지 않으셔도
-                  서비스 이용에 지장이 없습니다.
+                  <strong>선택사항:</strong> 동의는 자발적이며, 진행 중 언제든지 중단할 수 있습니다. 동의하지 않으시면
+                  테스트 이외의 서비스만 이용하실 수 있습니다.
                 </p>
               </div>
 

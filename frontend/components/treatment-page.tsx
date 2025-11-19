@@ -11,6 +11,8 @@ interface TreatmentPageProps {
   onNavigateToMain?: () => void
   onNavigateToUpload?: () => void
   onNavigateToMyPage?: () => void
+  onNavigateToMusic?: () => void
+  onNavigateToTea?: () => void // Added tea navigation prop
 }
 
 export default function TreatmentPage({ 
@@ -18,7 +20,9 @@ export default function TreatmentPage({
   onNavigateToHospital,
   onNavigateToMain,
   onNavigateToUpload,
-  onNavigateToMyPage
+  onNavigateToMyPage,
+  onNavigateToMusic,
+  onNavigateToTea // Destructure tea navigation
 }: TreatmentPageProps) {
   const treatments = [
     {
@@ -53,14 +57,24 @@ export default function TreatmentPage({
         <div className="text-center mb-3">
           <h1 className="font-bold text-foreground mb-2 text-base">잠시 쉬어가세요</h1>
           <p className="text-sm text-muted-foreground">
-            마음이 힘들때까지는 시간을 가져보세요
+            마음이 힘들 때 시간을 가져보세요
           </p>
         </div>
 
         {/* Treatment Cards Grid */}
         <div className="grid grid-cols-2 gap-2 mb-3">
           {treatments.map((treatment, idx) => (
-            <Card key={idx} className="border-2 border-border shadow-sm hover:shadow-md transition-shadow">
+            <Card 
+              key={idx} 
+              className="border-2 border-border shadow-sm hover:shadow-md transition-shadow cursor-pointer"
+              onClick={() => {
+                if (idx === 0 && onNavigateToMusic) {
+                  onNavigateToMusic()
+                } else if (idx === 1 && onNavigateToTea) {
+                  onNavigateToTea()
+                }
+              }}
+            >
               <CardContent className="p-2 flex flex-col items-center text-center">
                 <div className={`inline-flex items-center justify-center w-10 h-10 ${treatment.color} rounded-2xl mb-1.5`}>
                   <treatment.icon className="w-5 h-5 text-foreground/80" strokeWidth={2} />

@@ -3,6 +3,8 @@
 import { Button } from "@/components/ui/button"
 import { NewspaperIcon,Settings, Calendar, ChevronRight, ChevronLeft, Bell, HelpCircle, LogOut, CaseSensitive, BookType } from 'lucide-react'
 import NavigationBar from "@/components/navigation-bar"
+import { useState, useEffect } from 'react'
+import { getTestHistory } from '@/lib/test-results-storage'
 
 interface MyPageProps {
   userProfile?: any
@@ -11,6 +13,7 @@ interface MyPageProps {
   onNavigateToUpload?: () => void
   onNavigateToTreatment?: () => void
   onNavigateToTerms?:() => void
+  onViewTestHistory?: () => void
 }
 
 export default function MyPage({ 
@@ -19,12 +22,15 @@ export default function MyPage({
   onNavigateToMain,
   onNavigateToUpload,
   onNavigateToTreatment,
-  onNavigateToTerms
+  onNavigateToTerms,
+  onViewTestHistory
 }: MyPageProps) {
-  const testHistory = [
-    { id: 1, date: "2025.01.10", status: "양호", statusColor: "bg-green-100 text-green-700" },
-    { id: 2, date: "2025.01.07", status: "상담 권장", statusColor: "bg-orange-100 text-orange-700" },
-  ]
+  const [testHistory, setTestHistory] = useState<any[]>([])
+
+  useEffect(() => {
+    const history = getTestHistory()
+    setTestHistory(history.slice(0, 2)) // Show latest 2
+  }, [])
 
   return (
     <div className="h-screen bg-background flex flex-col overflow-hidden relative">
@@ -74,12 +80,29 @@ export default function MyPage({
 
         {/* 검사 기록 섹션 */}
         <div className="mb-3 flex-shrink-0">
-          <h3 className="text-sm font-bold text-foreground mb-2">검사 기록</h3>
+          <div className="flex items-center justify-between mb-2">
+            <h3 className="text-sm font-bold text-foreground">검사 기록</h3>
+            {testHistory.length > 0 && (
+              <button 
+                onClick={onViewTestHistory}
+                className="text-xs text-primary hover:text-primary/80"
+              >
+                전체보기
+              </button>
+            )}
+          </div>
+          
           <div className="space-y-2">
-            {testHistory.slice(0, 2).map((test) => (
+            {testHistory.length === 0 ? (
+              <div className="bg-card rounded-2xl p-4 shadow-md text-center">
+                <p className="text-xs text-muted-foreground">아직 검사 내역이 없습니다</p>
+              </div>
+            ) : (
+              testHistory.map((test) => (
               <div
                 key={test.id}
-                className="bg-card rounded-2xl p-2.5 shadow-md"
+                  className="bg-card rounded-2xl p-2.5 shadow-md cursor-pointer hover:shadow-lg transition-shadow"
+                  onClick={onViewTestHistory}
               >
                 <div className="flex items-center gap-2 mb-1">
                   <div className="w-8 h-8 bg-[#FFE5D9] rounded-xl flex items-center justify-center flex-shrink-0">
@@ -89,13 +112,11 @@ export default function MyPage({
                     <h4 className="font-bold text-xs text-foreground">심리 검사</h4>
                     <p className="text-xs text-muted-foreground">{test.date}</p>
                   </div>
-                  <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${test.statusColor} flex-shrink-0`}>
-                    {test.status}
-                  </span>
                   <ChevronRight className="w-4 h-4 text-muted-foreground flex-shrink-0" />
                 </div>
               </div>
-            ))}
+              ))
+            )}
           </div>
         </div>
 

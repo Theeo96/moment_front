@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Home, Share2, X, Heart, ChevronLeft, ChevronDown, ChevronUp } from 'lucide-react'
 import NavigationBar from '@/components/navigation-bar'
+import { saveTestResult, isTestResultSaved } from '@/lib/test-results-storage'
 
 export default function ResultSupportPage({
   results,
@@ -12,7 +13,8 @@ export default function ResultSupportPage({
   onNavigateToMain,
   onNavigateToUpload,
   onNavigateToTreatment,
-  onNavigateToMyPage
+  onNavigateToMyPage,
+  fromHistory = false // 추가: 검사 내역에서 왔는지 구분
 }: {
   results: any
   onBack: () => void
@@ -20,9 +22,38 @@ export default function ResultSupportPage({
   onNavigateToUpload: () => void
   onNavigateToTreatment: () => void
   onNavigateToMyPage: () => void
+  fromHistory?: boolean // 추가
 }) {
   const [showDetails, setShowDetails] = useState(false)
   const [showTreatmentPopup, setShowTreatmentPopup] = useState(false)
+  const [isSaved, setIsSaved] = useState(false)
+
+  const alreadySaved = isTestResultSaved(results)
+
+  // personality 데이터에서 정보 추출 (실제 JSON 구조에 맞게)
+  const personality = results?.personality || {}
+  const personalityType = personality?.type || {}
+  const personalityIcon = personalityType?.icon || "😔"
+  const personalitySummary = personality?.summary || "괜찮아요, 당신은 충분히 잘하고 있어요"
+  const personalityDetails = personality?.details || "" // 문자열 (줄바꿈 포함)
+  const personalityAdvices = personality?.advices || [] // 배열
+  const personalityWarning = personality?.warning || "" // 문자열
+
+  const handleSaveResults = () => {
+      if (alreadySaved) return
+
+      const saved = saveTestResult(results)
+      if (saved) {
+        setIsSaved(true)
+        // setTimeout(() => setIsSaved(false), 2000)
+      }
+    }
+
+
+  // personality.type을 f-string 형식으로 변환: '{description} {name}({key})'
+  const title = personalityType?.description && personalityType?.name && personalityType?.key
+    ? `${personalityType.description} ${personalityType.name}(${personalityType.key})`
+    : "요즘 조금 힘든 시간을\n보내고 계시는군요"
 
   // personality 데이터에서 정보 추출 (실제 JSON 구조에 맞게)
   const personality = results?.personality || {}
@@ -147,9 +178,11 @@ export default function ResultSupportPage({
               variant="outline"
               size="lg"
               className="w-full h-12 text-sm"
+              onClick={handleSaveResults}
+              disabled={isSaved || alreadySaved}
             >
               <Share2 className="mr-2 h-4 w-4" />
-              결과 저장
+              {alreadySaved ? '저장 완료' : isSaved ? '저장 완료' : '결과 저장'}
             </Button>
           </div>
 
