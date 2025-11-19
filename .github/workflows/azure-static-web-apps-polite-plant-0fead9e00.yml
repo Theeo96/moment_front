@@ -69,6 +69,7 @@ jobs:
           skip_app_build: true
           
         env:
+          NEXT_PRIVATE_TURBOPACK: "0"
           IS_STATIC_EXPORT: true
 
   close_pull_request_job:
