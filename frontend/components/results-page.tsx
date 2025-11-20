@@ -41,7 +41,7 @@ export default function ResultsPage({
     }
   }
 
-  // personality 데이터에서 정보 추출 (실제 JSON 구조에 맞게)
+  // personality 데이터에서 정보추출 (실제 JSON 구조에 맞게)
   const personality = results?.personality || {}
   const personalityType = personality?.type || {}
   const personalityIcon = personalityType?.icon || "😊"
