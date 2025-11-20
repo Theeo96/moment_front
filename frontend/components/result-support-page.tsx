@@ -31,40 +31,40 @@ export default function ResultSupportPage({
   const alreadySaved = isTestResultSaved(results)
 
   // // personality 데이터에서 정보 추출 (실제 JSON 구조에 맞게)
-  // const personality = results?.personality || {}
-  // const personalityType = personality?.type || {}
-  // const personalityIcon = personalityType?.icon || "😔"
-  // const personalitySummary = personality?.summary || "괜찮아요, 당신은 충분히 잘하고 있어요"
-  // const personalityDetails = personality?.details || "" // 문자열 (줄바꿈 포함)
-  // const personalityAdvices = personality?.advices || [] // 배열
-  // const personalityWarning = personality?.warning || "" // 문자열
+  const personality1 = results?.personality || {}
+  const personalityType1 = personality1?.type || {}
+  const personalityIcon1 = personalityType1?.icon || "😔"
+  const personalitySummary1 = personality1?.summary || "괜찮아요, 당신은 충분히 잘하고 있어요"
+  const personalityDetails1 = personality1?.details || "" // 문자열 (줄바꿈 포함)
+  const personalityAdvices1 = personality1?.advices || [] // 배열
+  const personalityWarning1 = personality1?.warning || "" // 문자열
 
-  const { personality = {} } = results || {};
+  // const { personality = {} } = results || {};
 
-  // personality와 personalityType을 구조 분해하여 모든 하위 변수를 한 번에 선언
-  const {
-    type: personalityType = {}, // personalityType 별도 추출
-    summary: personalitySummary = "괜찮아요, 당신은 충분히 잘하고 있어요",
-    details: personalityDetails = "",
-    advices: personalityAdvices = [],
-    warning: personalityWarning = "",
-  } = personality;
+  // // personality와 personalityType을 구조 분해하여 모든 하위 변수를 한 번에 선언
+  // const {
+  //   type: personalityType = {}, // personalityType 별도 추출
+  //   summary: personalitySummary = "괜찮아요, 당신은 충분히 잘하고 있어요",
+  //   details: personalityDetails = "",
+  //   advices: personalityAdvices = [],
+  //   warning: personalityWarning = "",
+  // } = personality;
 
-  // personalityType에서 icon 등을 추출
-  const {
-    icon: personalityIcon = "😔",
-    description, // title 생성에 사용될 변수
-    name,        // title 생성에 사용될 변수
-    key,         // title 생성에 사용될 변수
-  } = personalityType;
+  // // personalityType에서 icon 등을 추출
+  // const {
+  //   icon: personalityIcon = "😔",
+  //   description, // title 생성에 사용될 변수
+  //   name,        // title 생성에 사용될 변수
+  //   key,         // title 생성에 사용될 변수
+  // } = personalityType;
 
-  // personality.type을 f-string 형식으로 변환: '{description} {name}({key})'
-  // title 변수도 한 번만 선언되도록 관리
-  const title = description && name && key
-    ? `${description} ${name}(${key})`
-    : "요즘 조금 힘든 시간을\n보내고 계시는군요"
+  // // personality.type을 f-string 형식으로 변환: '{description} {name}({key})'
+  // // title 변수도 한 번만 선언되도록 관리
+  // const title = description && name && key
+  //   ? `${description} ${name}(${key})`
+  //   : "요즘 조금 힘든 시간을\n보내고 계시는군요"
 
-  //
+  // //
 
   const handleSaveResults = () => {
       if (alreadySaved) return
@@ -78,9 +78,9 @@ export default function ResultSupportPage({
 
 
   // personality.type을 f-string 형식으로 변환: '{description} {name}({key})'
-  // const title = personalityType?.description && personalityType?.name && personalityType?.key
-  //   ? `${personalityType.description} ${personalityType.name}(${personalityType.key})`
-  //   : "요즘 조금 힘든 시간을\n보내고 계시는군요"
+  const title1 = personalityType1?.description && personalityType1?.name && personalityType1?.key
+    ? `${personalityType1.description} ${personalityType1.name}(${personalityType1.key})`
+    : "요즘 조금 힘든 시간을\n보내고 계시는군요"
 
   return (
     <div className="h-screen bg-background flex flex-col overflow-hidden">
@@ -100,13 +100,13 @@ export default function ResultSupportPage({
         <div className="mx-auto max-w-2xl space-y-6">
           <div className="text-center space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-700">
             <div className="inline-block px-5 py-2.5 bg-primary/10 rounded-full">
-              <span className="text-2xl">{personalityIcon}</span>
+              <span className="text-2xl">{personalityIcon1}</span>
             </div>
             <h2 className="text-2xl font-bold text-balance leading-relaxed px-4 text-card-foreground whitespace-pre-line">
-              {title}
+              {title1}
             </h2>
             <p className="text-sm text-muted-foreground leading-relaxed max-w-md mx-auto">
-              {personalitySummary}
+              {personalitySummary1}
             </p>
           </div>
 
@@ -128,8 +128,8 @@ export default function ResultSupportPage({
               {/* personality-details 영역 (문자열을 줄바꿈으로 분리) */}
               <Card className="p-5 shadow-sm animate-in fade-in slide-in-from-top-2 duration-300">
                 <div className="space-y-3 text-sm leading-relaxed text-muted-foreground">
-                  {personalityDetails ? (
-                    personalityDetails.split('\n')
+                  {personalityDetails1 ? (
+                    personalityDetails1.split('\n')
                       .filter((detail: string) => detail.trim())
                       .map((detail: string, index: number) => (
                         <p key={index}>{detail.trim()}</p>
@@ -148,10 +148,10 @@ export default function ResultSupportPage({
               </Card>
 
               {/* personality-advices 영역 (동일한 형태) */}
-              {personalityAdvices.length > 0 && (
+              {personalityAdvices1.length > 0 && (
                 <Card className="p-5 shadow-sm animate-in fade-in slide-in-from-top-2 duration-300">
                   <div className="space-y-3 text-sm leading-relaxed text-muted-foreground">
-                    {personalityAdvices.map((advice: string, index: number) => (
+                    {personalityAdvices1.map((advice: string, index: number) => (
                       <p key={index}>{advice}</p>
                     ))}
                   </div>
@@ -159,10 +159,10 @@ export default function ResultSupportPage({
               )}
 
               {/* personality-warning 영역 (동일한 형태) */}
-              {personalityWarning && (
+              {personalityWarning1 && (
                 <Card className="p-5 shadow-sm animate-in fade-in slide-in-from-top-2 duration-300">
                   <div className="space-y-3 text-sm leading-relaxed text-muted-foreground">
-                    <p>{personalityWarning}</p>
+                    <p>{personalityWarning1}</p>
                   </div>
                 </Card>
               )}
