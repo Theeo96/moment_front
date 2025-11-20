@@ -1,7 +1,7 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
-import { NewspaperIcon,Settings, Calendar, ChevronRight, ChevronLeft, Bell, HelpCircle, LogOut, CaseSensitive, BookType } from 'lucide-react'
+import { NewspaperIcon,Settings, Calendar, ChevronRight, ChevronLeft, Bell, HelpCircle, LogOut, CaseSensitive, BookType, Languages } from 'lucide-react'
 import NavigationBar from "@/components/navigation-bar"
 import { useState, useEffect } from 'react'
 import { getTestHistory } from '@/lib/test-results-storage'
@@ -162,6 +162,14 @@ export default function MyPage({
               <div className="flex items-center gap-2">
                 <BookType className="w-4 h-4 text-muted-foreground" />
                 <span className="text-xs text-foreground">검사 결과 백과사전</span>
+              </div>
+              <ChevronRight className="w-4 h-4 text-muted-foreground" />
+            </button>
+
+            <button className="w-full flex items-center justify-between p-2.5 border-b border-border hover:bg-muted/50 transition-colors">
+              <div className="flex items-center gap-2">
+                <Languages className="w-4 h-4 text-muted-foreground" />
+                <span className="text-xs text-foreground">언어 변경</span>
               </div>
               <ChevronRight className="w-4 h-4 text-muted-foreground" />
             </button>
