@@ -63,7 +63,8 @@ export default function AnalysisLoadingPage({ onComplete, onError, image, catego
         } catch (error) {
           console.error('[v0] Error sending to backend:', error)
           setHasError(true)
-          setErrorMessage('요청 처리 중 오류가 발생했습니다.')
+          setErrorMessage('이미지 분석에 실패했습니다! 밝은 곳에서 촬영하시거나, 다시 그려보시겠어요?')
+          // setErrorMessage('요청 처리 중 오류가 발생했습니다.')
         }
       }
 

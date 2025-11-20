@@ -112,7 +112,7 @@ export default function MusicPage({
             <Card 
               key={idx} 
               className="border-2 border-border hover:shadow-md transition-shadow cursor-pointer"
-              onClick={() => handlePlaylistClick(playlist)}
+              // onClick={() => handlePlaylistClick(playlist)}
             >
               <CardContent className="p-4">
                 <div className="flex items-center gap-4">
