@@ -20,7 +20,7 @@ jobs:
           submodules: true
           lfs: false
 
-       - name: Install pnpm
+      - name: Install pnpm
         uses: pnpm/action-setup@v4
         with:
           version: 9        # 최신 버전
@@ -63,11 +63,12 @@ jobs:
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_POLITE_TREE_0CD256300 }}
           repo_token: ${{ secrets.GITHUB_TOKEN }} # Used for Github integrations (i.e. PR comments)
           action: "upload"
+
+          skip_app_build: true
           ###### Repository/Build Configurations - These values can be configured to match your app requirements. ######
           # For more information regarding Static Web App workflow configurations, please visit: https://aka.ms/swaworkflowconfig
           app_location: "frontend/out" # App source code path
           api_location: "" # Api source code path - optional
-          skip_app_build: true
           ###### End of Repository/Build Configurations ######
         env:
           IS_STATIC_EXPORT: true
@@ -83,5 +84,6 @@ jobs:
         with:
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_POLITE_TREE_0CD256300 }}
           action: "close"
+
 
 
