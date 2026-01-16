@@ -19,6 +19,43 @@ jobs:
         with:
           submodules: true
           lfs: false
+
+       - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9        # 최신 버전
+          run_install: false
+
+      # Node.js 20 강제 설치 (이게 핵심!)
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'      # 또는 '20.x', '20.18.0', '22' 등 가능
+          cache: 'pnpm'            # npm 캐시로 빌드 속도 2~3배 빨라짐
+          cache-dependency-path: frontend/pnpm-lock.yaml   # 필요시 경로 조정
+
+      # (선택) npm install 수동으로 돌리고 싶을 때만 사용
+      # - name: Install Dependencies
+      #   run: npm ci
+      #   working-directory: ./frontend
+
+      - name: Install Dependencies
+        run: pnpm install --no-frozen-lockfile
+        working-directory: ./frontend
+
+      - name: Build with Next.js Export
+        run: pnpm run build
+        working-directory: ./frontend
+        env:
+          IS_STATIC_EXPORT: true
+
+      - name: Verify out folder exists
+        run: |
+          echo "=== frontend/out 디렉토리 내용 확인 ==="
+          ls -la frontend/out/ || echo "out 폴더가 없습니다!"
+          echo "=== index.html 첫 20줄 ==="
+          head -n 20 frontend/out/index.html || echo "index.html이 없습니다!"
+          
       - name: Build And Deploy
         id: builddeploy
         uses: Azure/static-web-apps-deploy@v1
@@ -44,3 +81,4 @@ jobs:
         with:
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_POLITE_TREE_0CD256300 }}
           action: "close"
+
